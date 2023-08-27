@@ -1,0 +1,25 @@
+<ul style="list-style-type: none; padding: 0;">
+<%
+let groups = {};
+items.forEach(x => {
+  let year = x['date'].split(',')[1];
+  if (groups[year]) {
+    groups[year].push(x);
+  } else {
+    groups[year] = [x];
+  }
+});
+let years = Object.keys(groups).sort((i, j) => j-i);
+%>
+
+<% for (const year of years) { %>
+<h3><%= year %></h3>
+<% for (const item of groups[year]) { %>
+  <li>
+    <span style="color: #545555;"><%= item.date.split(',')[0] %></span>
+    <strong>»</strong>
+    <a href="<%- item.path %>" style="text-decoration: none;"><%= item.title %></a>
+  </li>
+<% } %>
+<% } %>
+</ul>

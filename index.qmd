@@ -1,0 +1,13 @@
+---
+listing:
+  contents: posts
+  sort: "date desc"
+  type: custom
+  template: list.ejs
+  categories: false
+  sort-ui: false
+  filter-ui: false
+  fields: [date, title]
+  feed: true
+title-block-banner: false
+---
