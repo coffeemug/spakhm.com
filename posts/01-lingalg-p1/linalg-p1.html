@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2023-08-27">
+<meta name="description" content="From notation to meaning.">
+
+<title>Slava Akhmechet - Linear Algebra for programmers, part 1</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Slava Akhmechet</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com/spakhm" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml" rel="" target=""><i class="bi bi-rss" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Linear Algebra for programmers, part 1</h1>
+</div>
+
+<div>
+  <div class="description">
+    From notation to meaning.
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 27, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://xkcd.com/566/"><img src="xkcd-matrix.jpg" class="img-fluid figure-img" width="500"></a></p>
+</figure>
+</div>
+<p>The most important thing about reading this blog post is to not get scared off by the formulas. The post may look like all the crap you normally skim over, so you may be tempted to skim over this one. Don’t! <strong>None of this is hard.</strong> Just read the post top to bottom, and I promise you every individual step and the whole thing put together will make sense.</p>
+<section id="highschool-math" class="level2">
+<h2 class="anchored" data-anchor-id="highschool-math">Highschool math</h2>
+<p>In hight school your math teacher may have started a treatment of linear algebra by making you solve a system of linear equations, at which point you very sensibly zoned out because you knew you’d go on to program computers and never have to solve a system of linear equations again (don’t worry, I won’t be talking much about them here).</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+0x_1 + 1x_2 = 0\\
+-1x_1 - 0x_2 = 0
+\end{eqnarray}
+\tag{1}
+\]</span></p>
+<p>You also may have learned that for some reason you can take the coefficients and put them in a 2D array like this: <span class="math inline">\(A=\begin{bmatrix} 0 &amp; 1 \\ -1 &amp; 0 \\ \end{bmatrix}\)</span>. You’ve now defined a matrix <span class="math inline">\(A\)</span>, and you can re-express the system of linear equations above as follows:</p>
+<p><span class="math display">\[
+\newcommand\qvec[1]{\begin{bmatrix}#1\end{bmatrix}}
+A\qvec{x_1\\x_2}=0
+\tag{2}
+\]</span></p>
+<p>If you’re <em>really</em> hellbent on cleaning things up, you can express the vector <span class="math inline">\(\qvec{x_1, x_2}\)</span> as <span class="math inline">\(x=\qvec{x_1 \\ x_2}\)</span>, which now gives you a really clean equation:</p>
+<p><span class="math display">\[
+Ax=0
+\tag{3}
+\]</span></p>
+<p>Equations 1 - 3 are just different ways to say the exact same thing. In different situations you may prefer one notation over another, but there is no material difference between them. They are all equivalent.</p>
+</section>
+<section id="matrix-vector-multiplication" class="level2">
+<h2 class="anchored" data-anchor-id="matrix-vector-multiplication">Matrix-vector multiplication</h2>
+<p>I’ll talk about what matrix-vector multiplication <em>means</em> in a moment. For now let’s look at how the operation is defined. The precise definition of matrix-vector multiplication flows out of the notation above, so you never again have to look it up on wikipedia. If you need to multiply a matrix by a vector, say <span class="math inline">\(\begin{bmatrix} 0 &amp; 1 \\ -1 &amp; 0 \\ \end{bmatrix} \qvec{1 \\ 2}\)</span>, just recall that this is equivalent to the left side of the system of equations above. Before, we took the coefficients in the linear equation system and factored them out into a 2D array. Now we reverse the procedure– take our 2D array and factor it back in as coefficients:</p>
+<p><span class="math display">\[
+\qvec{
+0*1 + 1*2\\
+-1*1 - 0*2
+}=\qvec{2 \\ -1}
+\]</span></p>
+<p>If you forget how matrix-vector multiplication works, just remember that its definition flows out of the notation. Convert the matrix-vector multiplication notation back into the linear equation system notation again, and you get matrix-vector multiplication.</p>
+<p>You may remember from high school that there is an operation defined on vectors called the dot product. The dot product is the sum of pairwise multiplication of elements of two vectors. E.g. <span class="math inline">\(\qvec{0, 1}\cdot\qvec{1, 2}=0*1 + 1*2=2\)</span>. The dot product of two vectors is an operation that represents the degree to which the two vectors point in the same direction.</p>
+<p>That’s simple enough. But here is something curious. Another way to think of matrix-vector multiplication is by treating each row of a matrix as its own vector, and computing the dot products of these row vectors with the vector we’re multiplying by (in this case <span class="math inline">\(\qvec{1, 2}\)</span>). How on earth does that work?! What does vector similarity have to do with linear equations, or with matrix-vector multiplication? I cannot answer this question quite yet. But we’ll eventually build up to an answer in future posts.</p>
+</section>
+<section id="matrices-as-functions" class="level2">
+<h2 class="anchored" data-anchor-id="matrices-as-functions">Matrices as functions</h2>
+<p>Now let’s look at what matrix-vector multiplication means. This blew my mind when I first learned about it. You can think of a matrix as a function, and you can think of multiplying a matrix by a vector as applying that function to the vector. So when you see <span class="math inline">\(Ax\)</span>, autocomplete it in your head to “calling some function <span class="math inline">\(A\)</span> with argument <span class="math inline">\(x\)</span>”.</p>
+<p>This is actually not so strange– you can think of many structures as functions. For example, you can think of a number <span class="math inline">\(3\)</span> as a function. When you multiply it by things, it makes them three times bigger. Thinking about matrices this way happens to be very convenient.</p>
+<p>The fact that <span class="math inline">\(Ax=0\)</span> denotes both the linear system in equation 1, and a call to a function <span class="math inline">\(A\)</span> with argument <span class="math inline">\(x\)</span> (getting the zero vector in return) leads to a curious insight about the relationship between high school math and programming.</p>
+<p>In high school you’re given equations and asked to find their roots. We already established that a system of equations is equivalent to matrix-vector multiplication, which can be thought of as function application. And so, in high school you’re <em>given</em> a function <span class="math inline">\(A\)</span> along with its output, and asked to <em>find the inputs that match that output</em>. Programming is usually the exact opposite. In programming what you’re <em>given</em> is the shape of inputs and outputs, and your job is to <em>construct a function</em> <span class="math inline">\(A\)</span> that converts inputs to desired outputs. The computer then executes the functions you construct, often at scale.</p>
+<p>So it turns out that solving systems of linear equations in high school math classes and writing React code in your day job are two sides of the same coin! It’s a complicated idea, so it takes a while to wrap your head around its implications (and its limitations). Illuminating this relationship in much more depth is another thing I hope to accomplish with this series of posts.</p>
+</section>
+<section id="what-does-beginbmatrix0-1--1-0-endbmatrix-do" class="level2">
+<h2 class="anchored" data-anchor-id="what-does-beginbmatrix0-1--1-0-endbmatrix-do">What does <span class="math inline">\(\begin{bmatrix}0 &amp; 1 \\ -1 &amp; 0 \\ \end{bmatrix}\)</span> do?</h2>
+<p>Going back to our lowly 2x2 matrix <span class="math inline">\(A=\begin{bmatrix} 0 &amp; 1 \\ -1 &amp; 0 \\ \end{bmatrix}\)</span>, let’s consider what this matrix does. Taking an equally lowly vector <span class="math inline">\(x=\qvec{0, 1}\)</span> and multiplying <span class="math inline">\(A\)</span> by <span class="math inline">\(x\)</span>, we get <span class="math inline">\(Ax=\qvec{1, 0}\)</span>. Let’s do this a few more times:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;A\qvec{1 \\ 0}=\qvec{0, -1}\\
+&amp;A\qvec{0 \\ -1}=\qvec{-1, 0}\\
+&amp;A\qvec{-1 \\ 0}=\qvec{0, 1}
+\end{aligned}
+\]</span></p>
+<p>After the fourth operation we’re back where we started. Plotting this we get:</p>
+<div class="cell" data-execution_count="22">
+<div class="cell-output cell-output-display">
+<p><img src="linalg-p1_files/figure-html/cell-2-output-1.png" class="img-fluid"></p>
+</div>
+</div>
+<p>So the matrix <span class="math inline">\(A\)</span> performs a clockwise rotation on its input vector by 90 degrees! How does that work? Suppose we had to write a normal Python function to do counterclockwise 90 degree rotation:</p>
+<div class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rotate(vec):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    x, y <span class="op">=</span> vec</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [y, <span class="op">-</span>x]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>[rotate([<span class="dv">0</span>, <span class="dv">1</span>]),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a> rotate([<span class="dv">1</span>, <span class="dv">0</span>]),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a> rotate([<span class="dv">0</span>, <span class="op">-</span><span class="dv">1</span>]),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a> rotate([<span class="op">-</span><span class="dv">1</span>, <span class="dv">0</span>])]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="33">
+<pre><code>[[1, 0], [0, -1], [-1, 0], [0, 1]]</code></pre>
+</div>
+</div>
+<p>These are the same results that we got by matrix multiplication. It helps to tinker with matrix-vector multiplication by hand to internalize how it works. Can you write a matrix that rotates its input counterclockwise? How about one that rotates by 45 degrees? A matrix that returns its input as is?</p>
+</section>
+<section id="matrix-matrix-multiplication" class="level2">
+<h2 class="anchored" data-anchor-id="matrix-matrix-multiplication">Matrix-matrix multiplication</h2>
+<p>In highschool your teacher also gave you a bunch of rules for how to multiply matrices by each other, and then, if you’re lucky, maybe explained what matrix-matrix multiplication means. I always thought it’s a silly way of teaching it. Where did the rules come from? Did Moses bring them down from mount Sinai on stone tablets?</p>
+<p>Instead, let’s do it the sensible way and put the horse before the cart. Knowing what we know, if <em>we</em> were tasked with defining matrix multiplication, what would we <em>want it to do</em>? What could be a reasonable definition?</p>
+<p>We’ve seen in the previous section that <span class="math inline">\(A\)</span> rotates its input vector clockwise by 90 degrees. We’ve also seen that if we apply <span class="math inline">\(A\)</span>, take the resulting vector, and apply <span class="math inline">\(A\)</span> again, <em>that</em> gets rotated by 90 degrees. So applying <span class="math inline">\(A\)</span> twice rotates the <em>original</em> input clockwise by 180 degrees. Mathematically, we can express it like this: <span class="math inline">\(A(Ax)\)</span>. We perform matrix-vector multiplication <span class="math inline">\(Ax\)</span> which produces a vector, we take that vector, and perform matrix-vector multiplication on that.</p>
+<p>Normally in math we want the multiplication operation to associate. It would be strage if the result of <span class="math inline">\(2*(2*3)\)</span> were different from <span class="math inline">\((2*2)*3\)</span>. So it’s sensible to apply this principle to matrices and make <em>their</em> multiplication associative. In other words, we want the following equation to be true: <span class="math display">\[
+A(Ax)=(AA)x
+\]</span></p>
+<p>Since <span class="math inline">\(A(Ax)\)</span> rotated <span class="math inline">\(x\)</span> clockwise by 180 degrees, ideally <span class="math inline">\(AA\)</span> would be a matrix that does exactly the same thing. To put it more generally, if matrix <span class="math inline">\(A\)</span> performs some operation, and another matrix <span class="math inline">\(B\)</span> performs a different operation, we want the matrix <span class="math inline">\(M=AB\)</span> to perform both of those operations one after another. A different way of putting it is that if we think of matrices as functions, we want matrix multiplication to act in the same way as function composition.</p>
+<p>This is exactly what matrix multiplication does. The derivation is a little bit messy, so instead of doing it inline I added it an <a href="#appendix-matrix-matrix-multiplication-derivation">appendix</a> at the end of this post. If you forget why matrix-matrix multiplication is defined the way it is, you can always come back to this explanation.</p>
+</section>
+<section id="type-systems" class="level2">
+<h2 class="anchored" data-anchor-id="type-systems">Type systems</h2>
+<p>Let’s look at another example of matrix-vector multiplication, this time with a non-square matrix:</p>
+<p><span class="math display">\[\begin{bmatrix}
+0 &amp; 1 \\
+-1 &amp; 0 \\
+0 &amp; 0
+\end{bmatrix}
+\qvec{1 \\ 2}
+=\qvec{2 \\ -1 \\ 0}\]</span></p>
+<p>Let’s call this matrix on the left <span class="math inline">\(M\)</span>. In the equation above we get our result by performing the dot product of <span class="math inline">\(\qvec{1, 2}\)</span> with every row of <span class="math inline">\(M\)</span>. In other words, we treat each row of <span class="math inline">\(M\)</span> as a vector, perform a pairwise multiplication of its elements with <span class="math inline">\(\qvec{1, 2}\)</span>, and sum them.</p>
+<p>Now here is something interesting. Since you can’t perform a dot product of two vectors with different dimensions, for matrix-vector multiplication to work the number of elements in <span class="math inline">\(\qvec{1, 2}\)</span> must be equal to the number of columns in <span class="math inline">\(M\)</span>. Switching to thinking of <span class="math inline">\(M\)</span> as a function, <em>we’ve now learned something about the type of its input</em>. <span class="math inline">\(M\)</span>’s arguments <em>must</em> be vectors of two dimensions.</p>
+<p>The opposite is true for <span class="math inline">\(M\)</span>’s rows. Because we perform a dot product of <span class="math inline">\(\qvec{1, 2}\)</span> with every row of <span class="math inline">\(M\)</span> and <span class="math inline">\(M\)</span> has three rows, the output vector must necessarily have three elements. And so, the number of rows in <span class="math inline">\(M\)</span> tells us about the type of its output.</p>
+<p>Here is a simple way of expressing this in typescript:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode ts code-with-copy"><code class="sourceCode typescript"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">// Columns are the input; rows are the output</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> mC <span class="op">=</span> [<span class="dt">number</span><span class="op">,</span> <span class="dt">number</span>]<span class="op">;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> mR <span class="op">=</span> [<span class="dt">number</span><span class="op">,</span> <span class="dt">number</span><span class="op">,</span> <span class="dt">number</span>]<span class="op">;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> M <span class="op">=</span> (in<span class="op">:</span> mC) <span class="op">-&gt;</span> mR<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now let’s consider how types for matrix multiplication work. Suppose we have a different matrix <span class="math inline">\(N\)</span>, and we’d like to multiply <span class="math inline">\(N\)</span> by <span class="math inline">\(M\)</span>. What must the type of the matrix <span class="math inline">\(N\)</span> be? Well, if we look at a term <span class="math inline">\(NMx\)</span>, <span class="math inline">\(M\)</span>’s output becomes <span class="math inline">\(N\)</span>’s input. Thefore, <span class="math inline">\(N\)</span>’s input and <span class="math inline">\(M\)</span>’s output must be of the same type. In other words, <span class="math inline">\(N\)</span>’s number of columns must be the same as <span class="math inline">\(M\)</span>’s number of rows:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode ts code-with-copy"><code class="sourceCode typescript"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> N <span class="op">=</span> (in<span class="op">:</span> mR) <span class="op">-&gt;</span> <span class="dt">any</span><span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>When you think about which matrices can and cannot be multiplied by each other, it’s actually quite simple– the output of one matrix (its rows) must have the same dimension as the input of another (its columns). If you get confused about that, perhaps writing it out in typescript notation will help!</p>
+</section>
+<section id="whats-next" class="level2">
+<h2 class="anchored" data-anchor-id="whats-next">What’s next?</h2>
+<p>This post should give you a basic intuition for what matrices are and how they work. However, we’ve just scrated the surface. Here are some interesting questions for you to consider:</p>
+<ul>
+<li>You saw we can treat rows of a matrix as vectors. What is the intuitive meaning of these row vectors?</li>
+<li>This (correctly) suggests we can also treat matrix columns as vectors. What is the intuitive meaning of column vectors?</li>
+<li>If we think of a matrix <span class="math inline">\(A\)</span> as a function, can we look at it and tell which inputs result in the output of zero? In other words, how do we solve <span class="math inline">\(Ax=0\)</span>?</li>
+<li>We know matrix multiplication can be thought of as composing two functions into a single function. Can we do the opposite and break up a matrix into multiple smaller functions? How? And what would these smaller functions do?</li>
+<li>What the heck are determinants, eigenvectors, and eigenvalues?</li>
+</ul>
+<p>To start answering these questions, in the next part I plan to cover linear combinations, vector spaces, linear maps, and linear independence. Stay tuned!</p>
+</section>
+<section id="appendix-matrix-matrix-multiplication-derivation" class="level2">
+<h2 class="anchored" data-anchor-id="appendix-matrix-matrix-multiplication-derivation">Appendix: matrix-matrix multiplication derivation</h2>
+<p>Coming back to matrix-matrix multiplication, we’ve already established that we want <span class="math inline">\((AB)x=A(Bx)\)</span>. Let’s look at how to derive the multiplication definition from this equation. Rather than do it generally, I’ll do it for a 2x2 example, but exactly the same principle applies to matrices of other sizes.</p>
+<p>Let <span class="math inline">\(A=\begin{bmatrix} a_{11} &amp; a_{12} \\ a_{21} &amp; a_{22} \\ \end{bmatrix}\)</span>, let <span class="math inline">\(B=\begin{bmatrix} b_{11} &amp; b_{12} \\ b_{21} &amp; b_{22} \\ \end{bmatrix}\)</span>, and let <span class="math inline">\(x=\qvec{x_1 \\ x_2}\)</span>. Now let’s look at <span class="math inline">\(A(Bx)\)</span>. Doing matrix-vector multiplication <span class="math inline">\(Bx\)</span> we get:</p>
+<p><span class="math display">\[
+Bx=\qvec{x_1b_{11} + x_2{b12} \\ x_1b_{21}+x_2b_{22}}
+\]</span></p>
+<p>That’s a vector, and we already know how to multiply a matrix by a vector, so we do it again and get a messy:</p>
+<p><span class="math display">\[
+\begin{aligned}
+A(Bx)
+&amp;=\qvec{
+  a_{11}(x_1b_{11} + x_2b_{12}) + a_{12}(x_1b_{21} + x_2b_{22}) \\
+  a_{21}(x_1b_{11} + x_2b_{12}) + a_{22}(x_1b_{21} + x_2b_{22})}\\
+&amp;=\qvec{
+  x_1a_{11}b_{11} + x_2a_{11}b_{12} + x_1a_{12}b_{21} + x_2a_{12}b_{22} \\
+  x_1a_{21}b_{11} + x_2a_{21}b_{12} + x_1a_{22}b_{21} + x_2a_{22}b_{22}}\\
+&amp;=\qvec{
+  x_1(a_{11}b_{11} + a_{12}b_{21}) + x_2(a_{11}b_{12} + a_{12}b_{22}) \\
+  x_1(a_{21}b_{11} + a_{22}b_{21}) + x_2(a_{21}b_{12} + a_{22}b_{22})}
+\end{aligned}
+\]</span></p>
+<p>This is starting to look like the left side of a linear system of equations again, and we know we can rewrite it by factoring out the coefficients into a matrix:</p>
+<p><span class="math display">\[
+A(Bx)=\begin{bmatrix}
+a_{11}b_{11} + a_{12}b_{21} &amp; a_{11}b_{12} + a_{12}b_{22} \\
+a_{21}b_{11} + a_{22}b_{21} &amp; a_{21}b_{12} + a_{22}b_{22}
+\end{bmatrix}\qvec{x_1 \\ x_2}
+\]</span></p>
+<p>This is our matrix <span class="math inline">\(AB\)</span>! It’s first column is <span class="math inline">\(A\qvec{b_{11} \\ b_{21}}\)</span>, and its second column is <span class="math inline">\(A\qvec{b_{12} \\ b_{22}}\)</span>. In other words each column of <span class="math inline">\(AB\)</span> is a matrix-vector product of <span class="math inline">\(A\)</span> with a corresponding column of <span class="math inline">\(B\)</span>. Which is precisely the definition of matrix-matrix multiplication.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

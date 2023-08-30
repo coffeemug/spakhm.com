@@ -12,32 +12,203 @@
 <generator>quarto-1.3.450</generator>
 <lastBuildDate>Sun, 27 Aug 2023 07:00:00 GMT</lastBuildDate>
 <item>
-  <title>Some blog post</title>
-  <link>https://spakhm.com/posts/some-blog-post.html</link>
+  <title>Linear Algebra for programmers, part 1</title>
+  <link>https://spakhm.com/posts/01-lingalg-p1/linalg-p1.html</link>
   <description><![CDATA[ 
 
 
 
-<p>this is a test</p>
-<div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span></span></code></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>2</code></pre>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://xkcd.com/566/"><img src="https://spakhm.com/posts/01-lingalg-p1/xkcd-matrix.jpg" class="img-fluid figure-img" width="500"></a></p>
+</figure>
+</div>
+<p>The most important thing about reading this blog post is to not get scared off by the formulas. The post may look like all the crap you normally skim over, so you may be tempted to skim over this one. Don’t! <strong>None of this is hard.</strong> Just read the post top to bottom, and I promise you every individual step and the whole thing put together will make sense.</p>
+<section id="highschool-math" class="level2">
+<h2 class="anchored" data-anchor-id="highschool-math">Highschool math</h2>
+<p>In hight school your math teacher may have started a treatment of linear algebra by making you solve a system of linear equations, at which point you very sensibly zoned out because you knew you’d go on to program computers and never have to solve a system of linear equations again (don’t worry, I won’t be talking much about them here).</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Beqnarray%7D%0A0x_1%20+%201x_2%20=%200%5C%5C%0A-1x_1%20-%200x_2%20=%200%0A%5Cend%7Beqnarray%7D%0A%5Ctag%7B1%7D%0A"></p>
+<p>You also may have learned that for some reason you can take the coefficients and put them in a 2D array like this: <img src="https://latex.codecogs.com/png.latex?A=%5Cbegin%7Bbmatrix%7D%200%20&amp;%201%20%5C%5C%20-1%20&amp;%200%20%5C%5C%20%5Cend%7Bbmatrix%7D">. You’ve now defined a matrix <img src="https://latex.codecogs.com/png.latex?A">, and you can re-express the system of linear equations above as follows:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cnewcommand%5Cqvec%5B1%5D%7B%5Cbegin%7Bbmatrix%7D#1%5Cend%7Bbmatrix%7D%7D%0AA%5Cqvec%7Bx_1%5C%5Cx_2%7D=0%0A%5Ctag%7B2%7D%0A"></p>
+<p>If you’re <em>really</em> hellbent on cleaning things up, you can express the vector <img src="https://latex.codecogs.com/png.latex?%5Cqvec%7Bx_1,%20x_2%7D"> as <img src="https://latex.codecogs.com/png.latex?x=%5Cqvec%7Bx_1%20%5C%5C%20x_2%7D">, which now gives you a really clean equation:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0AAx=0%0A%5Ctag%7B3%7D%0A"></p>
+<p>Equations 1 - 3 are just different ways to say the exact same thing. In different situations you may prefer one notation over another, but there is no material difference between them. They are all equivalent.</p>
+</section>
+<section id="matrix-vector-multiplication" class="level2">
+<h2 class="anchored" data-anchor-id="matrix-vector-multiplication">Matrix-vector multiplication</h2>
+<p>I’ll talk about what matrix-vector multiplication <em>means</em> in a moment. For now let’s look at how the operation is defined. The precise definition of matrix-vector multiplication flows out of the notation above, so you never again have to look it up on wikipedia. If you need to multiply a matrix by a vector, say <img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Bbmatrix%7D%200%20&amp;%201%20%5C%5C%20-1%20&amp;%200%20%5C%5C%20%5Cend%7Bbmatrix%7D%20%5Cqvec%7B1%20%5C%5C%202%7D">, just recall that this is equivalent to the left side of the system of equations above. Before, we took the coefficients in the linear equation system and factored them out into a 2D array. Now we reverse the procedure– take our 2D array and factor it back in as coefficients:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cqvec%7B%0A0*1%20+%201*2%5C%5C%0A-1*1%20-%200*2%0A%7D=%5Cqvec%7B2%20%5C%5C%20-1%7D%0A"></p>
+<p>If you forget how matrix-vector multiplication works, just remember that its definition flows out of the notation. Convert the matrix-vector multiplication notation back into the linear equation system notation again, and you get matrix-vector multiplication.</p>
+<p>You may remember from high school that there is an operation defined on vectors called the dot product. The dot product is the sum of pairwise multiplication of elements of two vectors. E.g. <img src="https://latex.codecogs.com/png.latex?%5Cqvec%7B0,%201%7D%5Ccdot%5Cqvec%7B1,%202%7D=0*1%20+%201*2=2">. The dot product of two vectors is an operation that represents the degree to which the two vectors point in the same direction.</p>
+<p>That’s simple enough. But here is something curious. Another way to think of matrix-vector multiplication is by treating each row of a matrix as its own vector, and computing the dot products of these row vectors with the vector we’re multiplying by (in this case <img src="https://latex.codecogs.com/png.latex?%5Cqvec%7B1,%202%7D">). How on earth does that work?! What does vector similarity have to do with linear equations, or with matrix-vector multiplication? I cannot answer this question quite yet. But we’ll eventually build up to an answer in future posts.</p>
+</section>
+<section id="matrices-as-functions" class="level2">
+<h2 class="anchored" data-anchor-id="matrices-as-functions">Matrices as functions</h2>
+<p>Now let’s look at what matrix-vector multiplication means. This blew my mind when I first learned about it. You can think of a matrix as a function, and you can think of multiplying a matrix by a vector as applying that function to the vector. So when you see <img src="https://latex.codecogs.com/png.latex?Ax">, autocomplete it in your head to “calling some function <img src="https://latex.codecogs.com/png.latex?A"> with argument <img src="https://latex.codecogs.com/png.latex?x">”.</p>
+<p>This is actually not so strange– you can think of many structures as functions. For example, you can think of a number <img src="https://latex.codecogs.com/png.latex?3"> as a function. When you multiply it by things, it makes them three times bigger. Thinking about matrices this way happens to be very convenient.</p>
+<p>The fact that <img src="https://latex.codecogs.com/png.latex?Ax=0"> denotes both the linear system in equation 1, and a call to a function <img src="https://latex.codecogs.com/png.latex?A"> with argument <img src="https://latex.codecogs.com/png.latex?x"> (getting the zero vector in return) leads to a curious insight about the relationship between high school math and programming.</p>
+<p>In high school you’re given equations and asked to find their roots. We already established that a system of equations is equivalent to matrix-vector multiplication, which can be thought of as function application. And so, in high school you’re <em>given</em> a function <img src="https://latex.codecogs.com/png.latex?A"> along with its output, and asked to <em>find the inputs that match that output</em>. Programming is usually the exact opposite. In programming what you’re <em>given</em> is the shape of inputs and outputs, and your job is to <em>construct a function</em> <img src="https://latex.codecogs.com/png.latex?A"> that converts inputs to desired outputs. The computer then executes the functions you construct, often at scale.</p>
+<p>So it turns out that solving systems of linear equations in high school math classes and writing React code in your day job are two sides of the same coin! It’s a complicated idea, so it takes a while to wrap your head around its implications (and its limitations). Illuminating this relationship in much more depth is another thing I hope to accomplish with this series of posts.</p>
+</section>
+<section id="what-does-beginbmatrix0-1--1-0-endbmatrix-do" class="level2">
+<h2 class="anchored" data-anchor-id="what-does-beginbmatrix0-1--1-0-endbmatrix-do">What does <img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Bbmatrix%7D0%20&amp;%201%20%5C%5C%20-1%20&amp;%200%20%5C%5C%20%5Cend%7Bbmatrix%7D"> do?</h2>
+<p>Going back to our lowly 2x2 matrix <img src="https://latex.codecogs.com/png.latex?A=%5Cbegin%7Bbmatrix%7D%200%20&amp;%201%20%5C%5C%20-1%20&amp;%200%20%5C%5C%20%5Cend%7Bbmatrix%7D">, let’s consider what this matrix does. Taking an equally lowly vector <img src="https://latex.codecogs.com/png.latex?x=%5Cqvec%7B0,%201%7D"> and multiplying <img src="https://latex.codecogs.com/png.latex?A"> by <img src="https://latex.codecogs.com/png.latex?x">, we get <img src="https://latex.codecogs.com/png.latex?Ax=%5Cqvec%7B1,%200%7D">. Let’s do this a few more times:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Baligned%7D%0A&amp;A%5Cqvec%7B1%20%5C%5C%200%7D=%5Cqvec%7B0,%20-1%7D%5C%5C%0A&amp;A%5Cqvec%7B0%20%5C%5C%20-1%7D=%5Cqvec%7B-1,%200%7D%5C%5C%0A&amp;A%5Cqvec%7B-1%20%5C%5C%200%7D=%5Cqvec%7B0,%201%7D%0A%5Cend%7Baligned%7D%0A"></p>
+<p>After the fourth operation we’re back where we started. Plotting this we get:</p>
+<div class="cell" data-execution_count="22">
+<div class="cell-output cell-output-display">
+<p><img src="https://spakhm.com/posts/01-lingalg-p1/linalg-p1_files/figure-html/cell-2-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence.</p>
+<p>So the matrix <img src="https://latex.codecogs.com/png.latex?A"> performs a clockwise rotation on its input vector by 90 degrees! How does that work? Suppose we had to write a normal Python function to do counterclockwise 90 degree rotation:</p>
+<div class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">def</span> rotate(vec):</span>
+<span id="cb1-2">    x, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> vec</span>
+<span id="cb1-3">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">return</span> [y, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>x]</span>
+<span id="cb1-4"></span>
+<span id="cb1-5">[rotate([<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]),</span>
+<span id="cb1-6"> rotate([<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]),</span>
+<span id="cb1-7"> rotate([<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]),</span>
+<span id="cb1-8"> rotate([<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>])]</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="33">
+<pre><code>[[1, 0], [0, -1], [-1, 0], [0, 1]]</code></pre>
+</div>
+</div>
+<p>These are the same results that we got by matrix multiplication. It helps to tinker with matrix-vector multiplication by hand to internalize how it works. Can you write a matrix that rotates its input counterclockwise? How about one that rotates by 45 degrees? A matrix that returns its input as is?</p>
+</section>
+<section id="matrix-matrix-multiplication" class="level2">
+<h2 class="anchored" data-anchor-id="matrix-matrix-multiplication">Matrix-matrix multiplication</h2>
+<p>In highschool your teacher also gave you a bunch of rules for how to multiply matrices by each other, and then, if you’re lucky, maybe explained what matrix-matrix multiplication means. I always thought it’s a silly way of teaching it. Where did the rules come from? Did Moses bring them down from mount Sinai on stone tablets?</p>
+<p>Instead, let’s do it the sensible way and put the horse before the cart. Knowing what we know, if <em>we</em> were tasked with defining matrix multiplication, what would we <em>want it to do</em>? What could be a reasonable definition?</p>
+<p>We’ve seen in the previous section that <img src="https://latex.codecogs.com/png.latex?A"> rotates its input vector clockwise by 90 degrees. We’ve also seen that if we apply <img src="https://latex.codecogs.com/png.latex?A">, take the resulting vector, and apply <img src="https://latex.codecogs.com/png.latex?A"> again, <em>that</em> gets rotated by 90 degrees. So applying <img src="https://latex.codecogs.com/png.latex?A"> twice rotates the <em>original</em> input clockwise by 180 degrees. Mathematically, we can express it like this: <img src="https://latex.codecogs.com/png.latex?A(Ax)">. We perform matrix-vector multiplication <img src="https://latex.codecogs.com/png.latex?Ax"> which produces a vector, we take that vector, and perform matrix-vector multiplication on that.</p>
+<p>Normally in math we want the multiplication operation to associate. It would be strage if the result of <img src="https://latex.codecogs.com/png.latex?2*(2*3)"> were different from <img src="https://latex.codecogs.com/png.latex?(2*2)*3">. So it’s sensible to apply this principle to matrices and make <em>their</em> multiplication associative. In other words, we want the following equation to be true: <img src="https://latex.codecogs.com/png.latex?%0AA(Ax)=(AA)x%0A"></p>
+<p>Since <img src="https://latex.codecogs.com/png.latex?A(Ax)"> rotated <img src="https://latex.codecogs.com/png.latex?x"> clockwise by 180 degrees, ideally <img src="https://latex.codecogs.com/png.latex?AA"> would be a matrix that does exactly the same thing. To put it more generally, if matrix <img src="https://latex.codecogs.com/png.latex?A"> performs some operation, and another matrix <img src="https://latex.codecogs.com/png.latex?B"> performs a different operation, we want the matrix <img src="https://latex.codecogs.com/png.latex?M=AB"> to perform both of those operations one after another. A different way of putting it is that if we think of matrices as functions, we want matrix multiplication to act in the same way as function composition.</p>
+<p>This is exactly what matrix multiplication does. The derivation is a little bit messy, so instead of doing it inline I added it an appendix at the end of this post. If you forget why matrix-matrix multiplication is defined the way it is, you can always come back to this explanation.</p>
+</section>
+<section id="type-systems" class="level2">
+<h2 class="anchored" data-anchor-id="type-systems">Type systems</h2>
+<p>Let’s look at another example of matrix-vector multiplication, this time with a non-square matrix:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%5Cbegin%7Bbmatrix%7D%0A0%20&amp;%201%20%5C%5C%0A-1%20&amp;%200%20%5C%5C%0A0%20&amp;%200%0A%5Cend%7Bbmatrix%7D%0A%5Cqvec%7B1%20%5C%5C%202%7D%0A=%5Cqvec%7B2%20%5C%5C%20-1%20%5C%5C%200%7D"></p>
+<p>Let’s call this matrix on the left <img src="https://latex.codecogs.com/png.latex?M">. In the equation above we get our result by performing the dot product of <img src="https://latex.codecogs.com/png.latex?%5Cqvec%7B1,%202%7D"> with every row of <img src="https://latex.codecogs.com/png.latex?M">. In other words, we treat each row of <img src="https://latex.codecogs.com/png.latex?M"> as a vector, perform a pairwise multiplication of its elements with <img src="https://latex.codecogs.com/png.latex?%5Cqvec%7B1,%202%7D">, and sum them.</p>
+<p>Now here is something interesting. Since you can’t perform a dot product of two vectors with different dimensions, for matrix-vector multiplication to work the number of elements in <img src="https://latex.codecogs.com/png.latex?%5Cqvec%7B1,%202%7D"> must be equal to the number of columns in <img src="https://latex.codecogs.com/png.latex?M">. Switching to thinking of <img src="https://latex.codecogs.com/png.latex?M"> as a function, <em>we’ve now learned something about the type of its input</em>. <img src="https://latex.codecogs.com/png.latex?M">’s arguments <em>must</em> be vectors of two dimensions.</p>
+<p>The opposite is true for <img src="https://latex.codecogs.com/png.latex?M">’s rows. Because we perform a dot product of <img src="https://latex.codecogs.com/png.latex?%5Cqvec%7B1,%202%7D"> with every row of <img src="https://latex.codecogs.com/png.latex?M"> and <img src="https://latex.codecogs.com/png.latex?M"> has three rows, the output vector must necessarily have three elements. And so, the number of rows in <img src="https://latex.codecogs.com/png.latex?M"> tells us about the type of its output.</p>
+<p>Here is a simple way of expressing this in typescript:</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode ts code-with-copy"><code class="sourceCode typescript"><span id="cb3-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">// Columns are the input; rows are the output</span></span>
+<span id="cb3-2"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">type</span> mC <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">number</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">number</span>]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb3-3"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">type</span> mR <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [<span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">number</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">number</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">,</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">number</span>]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span>
+<span id="cb3-4"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">type</span> M <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (in<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> mC) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> mR<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span></code></pre></div>
+<p>Now let’s consider how types for matrix multiplication work. Suppose we have a different matrix <img src="https://latex.codecogs.com/png.latex?N">, and we’d like to multiply <img src="https://latex.codecogs.com/png.latex?N"> by <img src="https://latex.codecogs.com/png.latex?M">. What must the type of the matrix <img src="https://latex.codecogs.com/png.latex?N"> be? Well, if we look at a term <img src="https://latex.codecogs.com/png.latex?NMx">, <img src="https://latex.codecogs.com/png.latex?M">’s output becomes <img src="https://latex.codecogs.com/png.latex?N">’s input. Thefore, <img src="https://latex.codecogs.com/png.latex?N">’s input and <img src="https://latex.codecogs.com/png.latex?M">’s output must be of the same type. In other words, <img src="https://latex.codecogs.com/png.latex?N">’s number of columns must be the same as <img src="https://latex.codecogs.com/png.latex?M">’s number of rows:</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode ts code-with-copy"><code class="sourceCode typescript"><span id="cb4-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">type</span> N <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (in<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span> mR) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-&gt;</span> <span class="dt" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">any</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span></span></code></pre></div>
+<p>When you think about which matrices can and cannot be multiplied by each other, it’s actually quite simple– the output of one matrix (its rows) must have the same dimension as the input of another (its columns). If you get confused about that, perhaps writing it out in typescript notation will help!</p>
+</section>
+<section id="whats-next" class="level2">
+<h2 class="anchored" data-anchor-id="whats-next">What’s next?</h2>
+<p>This post should give you a basic intuition for what matrices are and how they work. However, we’ve just scrated the surface. Here are some interesting questions for you to consider:</p>
+<ul>
+<li>You saw we can treat rows of a matrix as vectors. What is the intuitive meaning of these row vectors?</li>
+<li>This (correctly) suggests we can also treat matrix columns as vectors. What is the intuitive meaning of column vectors?</li>
+<li>If we think of a matrix <img src="https://latex.codecogs.com/png.latex?A"> as a function, can we look at it and tell which inputs result in the output of zero? In other words, how do we solve <img src="https://latex.codecogs.com/png.latex?Ax=0">?</li>
+<li>We know matrix multiplication can be thought of as composing two functions into a single function. Can we do the opposite and break up a matrix into multiple smaller functions? How? And what would these smaller functions do?</li>
+<li>What the heck are determinants, eigenvectors, and eigenvalues?</li>
+</ul>
+<p>To start answering these questions, in the next part I plan to cover linear combinations, vector spaces, linear maps, and linear independence. Stay tuned!</p>
+</section>
+<section id="appendix-matrix-matrix-multiplication-derivation" class="level2">
+<h2 class="anchored" data-anchor-id="appendix-matrix-matrix-multiplication-derivation">Appendix: matrix-matrix multiplication derivation</h2>
+<p>Coming back to matrix-matrix multiplication, we’ve already established that we want <img src="https://latex.codecogs.com/png.latex?(AB)x=A(Bx)">. Let’s look at how to derive the multiplication definition from this equation. Rather than do it generally, I’ll do it for a 2x2 example, but exactly the same principle applies to matrices of other sizes.</p>
+<p>Let <img src="https://latex.codecogs.com/png.latex?A=%5Cbegin%7Bbmatrix%7D%20a_%7B11%7D%20&amp;%20a_%7B12%7D%20%5C%5C%20a_%7B21%7D%20&amp;%20a_%7B22%7D%20%5C%5C%20%5Cend%7Bbmatrix%7D">, let <img src="https://latex.codecogs.com/png.latex?B=%5Cbegin%7Bbmatrix%7D%20b_%7B11%7D%20&amp;%20b_%7B12%7D%20%5C%5C%20b_%7B21%7D%20&amp;%20b_%7B22%7D%20%5C%5C%20%5Cend%7Bbmatrix%7D">, and let <img src="https://latex.codecogs.com/png.latex?x=%5Cqvec%7Bx_1%20%5C%5C%20x_2%7D">. Now let’s look at <img src="https://latex.codecogs.com/png.latex?A(Bx)">. Doing matrix-vector multiplication <img src="https://latex.codecogs.com/png.latex?Bx"> we get:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0ABx=%5Cqvec%7Bx_1b_%7B11%7D%20+%20x_2%7Bb12%7D%20%5C%5C%20x_1b_%7B21%7D+x_2b_%7B22%7D%7D%0A"></p>
+<p>That’s a vector, and we already know how to multiply a matrix by a vector, so we do it again and get a messy:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0A%5Cbegin%7Baligned%7D%0AA(Bx)%0A&amp;=%5Cqvec%7B%0A%20%20a_%7B11%7D(x_1b_%7B11%7D%20+%20x_2b_%7B12%7D)%20+%20a_%7B12%7D(x_1b_%7B21%7D%20+%20x_2b_%7B22%7D)%20%5C%5C%0A%20%20a_%7B21%7D(x_1b_%7B11%7D%20+%20x_2b_%7B12%7D)%20+%20a_%7B22%7D(x_1b_%7B21%7D%20+%20x_2b_%7B22%7D)%7D%5C%5C%0A&amp;=%5Cqvec%7B%0A%20%20x_1a_%7B11%7Db_%7B11%7D%20+%20x_2a_%7B11%7Db_%7B12%7D%20+%20x_1a_%7B12%7Db_%7B21%7D%20+%20x_2a_%7B12%7Db_%7B22%7D%20%5C%5C%0A%20%20x_1a_%7B21%7Db_%7B11%7D%20+%20x_2a_%7B21%7Db_%7B12%7D%20+%20x_1a_%7B22%7Db_%7B21%7D%20+%20x_2a_%7B22%7Db_%7B22%7D%7D%5C%5C%0A&amp;=%5Cqvec%7B%0A%20%20x_1(a_%7B11%7Db_%7B11%7D%20+%20a_%7B12%7Db_%7B21%7D)%20+%20x_2(a_%7B11%7Db_%7B12%7D%20+%20a_%7B12%7Db_%7B22%7D)%20%5C%5C%0A%20%20x_1(a_%7B21%7Db_%7B11%7D%20+%20a_%7B22%7Db_%7B21%7D)%20+%20x_2(a_%7B21%7Db_%7B12%7D%20+%20a_%7B22%7Db_%7B22%7D)%7D%0A%5Cend%7Baligned%7D%0A"></p>
+<p>This is starting to look like the left side of a linear system of equations again, and we know we can rewrite it by factoring out the coefficients into a matrix:</p>
+<p><img src="https://latex.codecogs.com/png.latex?%0AA(Bx)=%5Cbegin%7Bbmatrix%7D%0Aa_%7B11%7Db_%7B11%7D%20+%20a_%7B12%7Db_%7B21%7D%20&amp;%20a_%7B11%7Db_%7B12%7D%20+%20a_%7B12%7Db_%7B22%7D%20%5C%5C%0Aa_%7B21%7Db_%7B11%7D%20+%20a_%7B22%7Db_%7B21%7D%20&amp;%20a_%7B21%7Db_%7B12%7D%20+%20a_%7B22%7Db_%7B22%7D%0A%5Cend%7Bbmatrix%7D%5Cqvec%7Bx_1%20%5C%5C%20x_2%7D%0A"></p>
+<p>This is our matrix <img src="https://latex.codecogs.com/png.latex?AB">! It’s first column is <img src="https://latex.codecogs.com/png.latex?A%5Cqvec%7Bb_%7B11%7D%20%5C%5C%20b_%7B21%7D%7D">, and its second column is <img src="https://latex.codecogs.com/png.latex?A%5Cqvec%7Bb_%7B12%7D%20%5C%5C%20b_%7B22%7D%7D">. In other words each column of <img src="https://latex.codecogs.com/png.latex?AB"> is a matrix-vector product of <img src="https://latex.codecogs.com/png.latex?A"> with a corresponding column of <img src="https://latex.codecogs.com/png.latex?B">. Which is precisely the definition of matrix-matrix multiplication.</p>
 
 
+</section>
 
  ]]></description>
-  <category>linear algebra</category>
-  <guid>https://spakhm.com/posts/some-blog-post.html</guid>
+  <guid>https://spakhm.com/posts/01-lingalg-p1/linalg-p1.html</guid>
   <pubDate>Sun, 27 Aug 2023 07:00:00 GMT</pubDate>
 </item>
 </channel>

@@ -7,8 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="dcterms.date" content="2023-08-27">
+<meta name="description" content="From notation to meaning.">
 
-<title>Slava Akhmechet - Some blog post</title>
+<title>Slava Akhmechet - Linear Algebra for programmers, part 1</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -85,6 +86,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 <link rel="stylesheet" href="../styles.css">
 </head>
@@ -132,12 +135,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Some blog post</h1>
-  <div class="quarto-categories">
-    <div class="quarto-category">linear algebra</div>
-  </div>
-  </div>
+<h1 class="title">Linear Algebra for programmers, part 1</h1>
+</div>
 
+<div>
+  <div class="description">
+    From notation to meaning.
+  </div>
+</div>
 
 
 <div class="quarto-title-meta">
@@ -156,16 +161,87 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>this is a test</p>
-<div class="cell" data-execution_count="1">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="op">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="1">
-<pre><code>2</code></pre>
-</div>
-</div>
-<p>This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence. This is going to be a very long sentence.</p>
+<p>The most important thing about reading this blog post is to not get scared off by the formulas. The post may look like all the crap you normally skim over, so you may be tempted to skim over this one. Don’t. <strong>None of this is hard.</strong> Just read the post top to bottom, and I promise you every individual step and the whole thing put together will make sense.</p>
+<section id="highschool-math" class="level2">
+<h2 class="anchored" data-anchor-id="highschool-math">Highschool math</h2>
+<p>In hight school your math teacher may have started a treatment of linear algebra by making you solve a system of linear equations, at which point you very sensibly zoned out because you knew you’d go on to program computers and never have to solve a system of linear equations again (don’t worry, I won’t be talking much about them here).</p>
+<p><span class="math display">\[
+\begin{eqnarray}
+0x_1 + 1x_2 = 0\\
+-1x_1 - 0x_2 = 0
+\end{eqnarray}
+\tag{1}
+\]</span></p>
+<p>You also may have learned that for some reason you can take the coefficients and put them in a 2D array like this: <span class="math inline">\(A=\begin{bmatrix} 0 &amp; 1 \\ -1 &amp; 0 \\ \end{bmatrix}\)</span>. You’ve now defined a matrix <span class="math inline">\(A\)</span>, and you can re-express the system of linear equations above as follows:</p>
+<p><span class="math display">\[
+\newcommand\qvec[1]{\begin{bmatrix}#1\end{bmatrix}}
+A\qvec{x_1\\x_2}=0
+\tag{2}
+\]</span></p>
+<p>If you’re <em>really</em> hellbent on cleaning things up, you can express the vector <span class="math inline">\(\qvec{x_1, x_2}\)</span> as <span class="math inline">\(x=\qvec{x_1 \\ x_2}\)</span>, which now gives you a really clean equation:</p>
+<p><span class="math display">\[
+Ax=0
+\tag{3}
+\]</span></p>
+<p>Equations 1 - 3 are just different ways to say the exact same thing. In different situations you may prefer one notation over another, but there is no material difference between them. They are all equivalent.</p>
+</section>
+<section id="matrix-vector-multiplication" class="level2">
+<h2 class="anchored" data-anchor-id="matrix-vector-multiplication">Matrix-vector multiplication</h2>
+<p>I’ll talk about what matrix-vector multiplication <em>means</em> in a moment. For now let’s look at how the operation is defined. The precise definition of matrix-vector multiplication flows out of the notation above, so you never again have to look it up on wikipedia. If you need to multiply a matrix by a vector, say <span class="math inline">\(\begin{bmatrix} 0 &amp; 1 \\ -1 &amp; 0 \\ \end{bmatrix} \qvec{1 \\ 2}\)</span>, just recall that this is equivalent to the left side of the system of equations above. So you take the <span class="math inline">\(\qvec{1, 2}\)</span> vector, jam it into every row, and add up the columns: <span class="math display">\[
+\qvec{
+0*1 + 1*2\\
+-1*1 - 0*2
+}=\qvec{2 \\ -1}
+\]</span></p>
+<p>“Jam it into every row and add up the columns” is a slightly less formal way of saying “dot product”– the sum of the pairwise multiplication of elements of two vectors. We obtain the result <span class="math inline">\(\qvec{2, -1}\)</span> by computing the dot product of <span class="math inline">\(\qvec{1, 2}\)</span> with every row of <span class="math inline">\(A\)</span>.</p>
+<p>(This in itself is curious. The dot product of two vectors represents the degree to which they point in the same direction. What does that have to do with linear equations or rows of a matrix in matrix-vector multiplication? I will not be answering this question here, but hope to get to it in a future post.)</p>
+<p>If you forget how this works, just think of converting the matrix-vector multiplication notation back into the linear equation system notation again.</p>
+</section>
+<section id="matrices-as-functions" class="level2">
+<h2 class="anchored" data-anchor-id="matrices-as-functions">Matrices as functions</h2>
+<p>Now let’s look at what matrix-vector multiplication means. This blew my mind when I first learned about it. You can think of a matrix as a function, and you can think of multiplying a matrix by a vector as applying that function to the vector. So when you see <span class="math inline">\(Ax\)</span>, autocomplete it in your head to “calling some function <span class="math inline">\(A\)</span> with argument <span class="math inline">\(x\)</span>”.</p>
+<p>This is actually not so strange– you can think of many structures as functions. For example, you can think of a number <span class="math inline">\(3\)</span> as a function. When you multiply it by things, it makes them three times bigger. Thinking about matrices this way happens to be very convenient.</p>
+<p>The fact that <span class="math inline">\(Ax=0\)</span> denotes both the linear system in equation 1, and a call to a function <span class="math inline">\(A\)</span> with argument <span class="math inline">\(x\)</span> (getting the zero vector in return) leads to a curious insight about the relationship between high school math and programming.</p>
+<p>In high school you’re given equations and asked to find their roots. We already established that a system of equations is equivalent to matrix-vector multiplication, which can be thought of as function application. And so, in high school you’re <em>given</em> a function <span class="math inline">\(A\)</span> along with its output, and asked to <em>find</em> the inputs that match that output.</p>
+<p>Programming is usually the exact opposite. In programming what you’re <em>given</em> is the shape of inputs and outputs, and your job is to <em>construct</em> a function <span class="math inline">\(A\)</span> that converts one to the other. The computer then executes the functions you construct, often at scale.</p>
+</section>
+<section id="what-do-matrices-do" class="level2">
+<h2 class="anchored" data-anchor-id="what-do-matrices-do">What do matrices do?</h2>
+</section>
+<section id="matrix-matrix-multiplication" class="level2">
+<h2 class="anchored" data-anchor-id="matrix-matrix-multiplication">Matrix-matrix multiplication</h2>
+<p>We’re now ready to cover matrix-matrix multiplication, what it means, and how it works. Suppose we have two matrices, <span class="math inline">\(M\)</span> and <span class="math inline">\(N\)</span>, and a vector <span class="math inline">\(x\)</span>. What does <span class="math inline">\(MNx\)</span> mean? What helps to think about this problem is that matrix multiplication is assosiative: <span class="math display">\[
+(MN)x=M(Nx)
+\tag{5}
+\]</span> On the righthand side, <span class="math inline">\(Nx\)</span> returns a vector, which we then multiply by <span class="math inline">\(M\)</span>. Thinking of matrices as functions, if we have two functions, <span class="math inline">\(m\)</span> and <span class="math inline">\(n\)</span> that simply multiply the corresponding matrix by their argument, then <span class="math inline">\(M(Nx)\)</span> is nothing more than <span class="math inline">\(m(n(x))\)</span>.</p>
+</section>
+<section id="type-systems" class="level2">
+<h2 class="anchored" data-anchor-id="type-systems">Type systems</h2>
+<p>Let’s look at another example of matrix-vector multiplication:</p>
+<p><span class="math display">\[\begin{bmatrix}
+0 &amp; 1 \\
+-1 &amp; 0 \\
+0 &amp; 0
+\end{bmatrix}
+\qvec{1 \\ 2}
+=\qvec{2 \\ -1 \\ 0}\tag{4}\]</span></p>
+<p>Let’s call the matrix on the left <span class="math inline">\(M\)</span>. In the equation above we get our result by performing the dot product of <span class="math inline">\(\qvec{1, 2}\)</span> with every row of <span class="math inline">\(M\)</span>. In other words, we treat each row of <span class="math inline">\(M\)</span> as a vector, perform a pairwise multiplication of its elements with <span class="math inline">\(\qvec{1, 2}\)</span>, and sum them.</p>
+<p>Since you can’t perform a dot product of two vectors with different dimensions, for matrix-vector multiplication to work the number of elements in <span class="math inline">\(\qvec{1, 2}\)</span> must be equal to the number of columns in <span class="math inline">\(M\)</span>. Switching to thinking of <span class="math inline">\(M\)</span> as a function, <em>we’ve now learned something about the type of its input</em>. <span class="math inline">\(M\)</span>’s arguments <em>must</em> be vectors of two dimensions.</p>
+<p>The opposite is true for <span class="math inline">\(M\)</span>’s rows. Because we perform a dot product of <span class="math inline">\(\qvec{1, 2}\)</span> with every row of <span class="math inline">\(M\)</span> and <span class="math inline">\(M\)</span> has three rows, the output vector must necessarily have three elements. And so, the number of rows in <span class="math inline">\(M\)</span> tells us about the type of its output.</p>
+<p>Here is a simple way of expressing this in typescript:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode ts code-with-copy"><code class="sourceCode typescript"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> C <span class="op">=</span> [<span class="dt">number</span><span class="op">,</span> <span class="dt">number</span>]<span class="op">;</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> R <span class="op">=</span> [<span class="dt">number</span><span class="op">,</span> <span class="dt">number</span><span class="op">,</span> <span class="dt">number</span>]<span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">let</span> M <span class="op">=</span> (in<span class="op">:</span> C) <span class="op">-&gt;</span> R {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ...</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>My goal with these series is to give you an intuitive understanding of common linear algebra concepts, so that when you encounter them, you can have a good sense of what they mean and not be completely lost. This post should give you an intuition for matrices, matrix multiplication, what it means, and how it works.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
