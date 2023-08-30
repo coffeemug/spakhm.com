@@ -203,7 +203,7 @@ Ax=0
 -1*1 - 0*2
 }=\qvec{2 \\ -1}
 \]</span></p>
-<p>If you forget how matrix-vector multiplication works, just remember that its definition flows out of the notation. Convert the matrix-vector multiplication notation back into the linear equation system notation again, and you get matrix-vector multiplication.</p>
+<p>If you forget how matrix-vector multiplication works, just remember that its definition flows out of the notation. Convert the matrix-vector multiplication notation back into the linear equation system notation again, and you get the matrix-vector multiplication formula.</p>
 <p>You may remember from high school that there is an operation defined on vectors called the dot product. The dot product is the sum of pairwise multiplication of elements of two vectors. E.g. <span class="math inline">\(\qvec{0, 1}\cdot\qvec{1, 2}=0*1 + 1*2=2\)</span>. The dot product of two vectors is an operation that represents the degree to which the two vectors point in the same direction.</p>
 <p>That’s simple enough. But here is something curious. Another way to think of matrix-vector multiplication is by treating each row of a matrix as its own vector, and computing the dot products of these row vectors with the vector we’re multiplying by (in this case <span class="math inline">\(\qvec{1, 2}\)</span>). How on earth does that work?! What does vector similarity have to do with linear equations, or with matrix-vector multiplication? I cannot answer this question quite yet. But we’ll eventually build up to an answer in future posts.</p>
 </section>
@@ -213,7 +213,7 @@ Ax=0
 <p>This is actually not so strange– you can think of many structures as functions. For example, you can think of a number <span class="math inline">\(3\)</span> as a function. When you multiply it by things, it makes them three times bigger. Thinking about matrices this way happens to be very convenient.</p>
 <p>The fact that <span class="math inline">\(Ax=0\)</span> denotes both the linear system in equation 1, and a call to a function <span class="math inline">\(A\)</span> with argument <span class="math inline">\(x\)</span> (getting the zero vector in return) leads to a curious insight about the relationship between high school math and programming.</p>
 <p>In high school you’re given equations and asked to find their roots. We already established that a system of equations is equivalent to matrix-vector multiplication, which can be thought of as function application. And so, in high school you’re <em>given</em> a function <span class="math inline">\(A\)</span> along with its output, and asked to <em>find the inputs that match that output</em>. Programming is usually the exact opposite. In programming what you’re <em>given</em> is the shape of inputs and outputs, and your job is to <em>construct a function</em> <span class="math inline">\(A\)</span> that converts inputs to desired outputs. The computer then executes the functions you construct, often at scale.</p>
-<p>So it turns out that solving systems of linear equations in high school math classes and writing React code in your day job are two sides of the same coin! It’s a complicated idea, so it takes a while to wrap your head around its implications (and its limitations). Illuminating this relationship in much more depth is another thing I hope to accomplish with this series of posts.</p>
+<p>So it turns out that solving systems of linear equations in high school math classes and writing React code in your day job are two sides of the same coin! It’s a complicated idea, so it takes a while to wrap your head around its implications (and its limitations). Illuminating this relationship in much more depth is another thing I hope to accomplish with these series of posts.</p>
 </section>
 <section id="what-does-beginbmatrix0-1--1-0-endbmatrix-do" class="level2">
 <h2 class="anchored" data-anchor-id="what-does-beginbmatrix0-1--1-0-endbmatrix-do">What does <span class="math inline">\(\begin{bmatrix}0 &amp; 1 \\ -1 &amp; 0 \\ \end{bmatrix}\)</span> do?</h2>
@@ -231,7 +231,7 @@ Ax=0
 <p><img src="linalg-p1_files/figure-html/cell-2-output-1.png" class="img-fluid"></p>
 </div>
 </div>
-<p>So the matrix <span class="math inline">\(A\)</span> performs a clockwise rotation on its input vector by 90 degrees! How does that work? Suppose we had to write a normal Python function to do counterclockwise 90 degree rotation:</p>
+<p>So the matrix <span class="math inline">\(A\)</span> performs a clockwise rotation on its input vector by 90 degrees! How does that work? Suppose we had to write a normal Python function to do a clockwise 90 degree rotation:</p>
 <div class="cell" data-execution_count="33">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rotate(vec):</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    x, y <span class="op">=</span> vec</span>
@@ -251,7 +251,7 @@ Ax=0
 <h2 class="anchored" data-anchor-id="matrix-matrix-multiplication">Matrix-matrix multiplication</h2>
 <p>In highschool your teacher also gave you a bunch of rules for how to multiply matrices by each other, and then, if you’re lucky, maybe explained what matrix-matrix multiplication means. I always thought it’s a silly way of teaching it. Where did the rules come from? Did Moses bring them down from mount Sinai on stone tablets?</p>
 <p>Instead, let’s do it the sensible way and put the horse before the cart. Knowing what we know, if <em>we</em> were tasked with defining matrix multiplication, what would we <em>want it to do</em>? What could be a reasonable definition?</p>
-<p>We’ve seen in the previous section that <span class="math inline">\(A\)</span> rotates its input vector clockwise by 90 degrees. We’ve also seen that if we apply <span class="math inline">\(A\)</span>, take the resulting vector, and apply <span class="math inline">\(A\)</span> again, <em>that</em> gets rotated by 90 degrees. So applying <span class="math inline">\(A\)</span> twice rotates the <em>original</em> input clockwise by 180 degrees. Mathematically, we can express it like this: <span class="math inline">\(A(Ax)\)</span>. We perform matrix-vector multiplication <span class="math inline">\(Ax\)</span> which produces a vector, we take that vector, and perform matrix-vector multiplication on that.</p>
+<p>We’ve seen in the previous section that <span class="math inline">\(A\)</span> rotates its input vector clockwise by 90 degrees. Of course when we apply <span class="math inline">\(A\)</span>, take the resulting vector, and apply <span class="math inline">\(A\)</span> again, <em>that</em> gets rotated by 90 degrees. So applying <span class="math inline">\(A\)</span> twice rotates the <em>original</em> input clockwise by 180 degrees. Mathematically, we can express it like this: <span class="math inline">\(A(Ax)\)</span>. We perform matrix-vector multiplication <span class="math inline">\(Ax\)</span> which produces a vector, we take that vector, and perform matrix-vector multiplication on that.</p>
 <p>Normally in math we want the multiplication operation to associate. It would be strage if the result of <span class="math inline">\(2*(2*3)\)</span> were different from <span class="math inline">\((2*2)*3\)</span>. So it’s sensible to apply this principle to matrices and make <em>their</em> multiplication associative. In other words, we want the following equation to be true: <span class="math display">\[
 A(Ax)=(AA)x
 \]</span></p>
@@ -299,7 +299,7 @@ A(Ax)=(AA)x
 <p><span class="math display">\[
 Bx=\qvec{x_1b_{11} + x_2{b12} \\ x_1b_{21}+x_2b_{22}}
 \]</span></p>
-<p>That’s a vector, and we already know how to multiply a matrix by a vector, so we do it again and get a messy:</p>
+<p>That’s a vector, and we already know how to multiply a matrix by a vector, so we do it again (and get a slightly messy result):</p>
 <p><span class="math display">\[
 \begin{aligned}
 A(Bx)
