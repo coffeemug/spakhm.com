@@ -12,6 +12,7 @@ website:
       - icon: rss
         href: index.xml
   search: false
+  twitter-card: true
 
 format:
   html:
